@@ -1,6 +1,7 @@
 package LeetcodeTop100.Top1__Top10;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -27,7 +28,15 @@ import java.util.Map;
  *
  * 链接：https://leetcode-cn.com/problems/lru-cache
  *
- * 思路：
+ * 思路：使用一个HashMap来存储对应的key以及链表的节点;
+ *       使用双端链表LinkedList来模拟内存，当对某个内存出现操作或者新添加一块内存，则将该内存移动到最前面;
+ *       如果经过某次操作，出现内存数量不够，则将链表最末尾的移除。
+ *       Tips:可以使用head以及tail来标识链表的首尾，从而节省很多边界判断。
+ *            先写好moveToHead() ：将节点移动到首部，其实就是先removeNode，然后addNewNode。
+ *                  addNewNode()：添加新的节点到链表
+ *                  removeNode()：移除节点
+ *                  popTail()：移除最后一个节点
+ *           等方法，方便后续直接调用。
  *
  * */
 
@@ -35,25 +44,94 @@ import java.util.Map;
 public class Top2_No146 {
 
     public static void main(String[] args) {
-
+        LRUCache l = new LRUCache(3);
+        l.put(2,3);
+        l.put(20,4);
+        l.put(30,5);
+        l.put(5,7);
+        System.out.println(l.get(2));
+        System.out.println(l.get(20));
     }
 
-    class LRUCache {
+    static class LRUCache {
 
-        private  Map<Integer, Integer> map = new HashMap<>();
+        private  Map<Integer, DoubleLinkedNode> map = new HashMap<>();
+        private DoubleLinkedNode head, last;
+        private int capacity;
 
         public LRUCache(int capacity) {
+            this.capacity = capacity;
 
+            head = new DoubleLinkedNode();
+            head.prev = null;
+
+            last = new DoubleLinkedNode();
+            last.next = null;
+
+            head.next = last;
+            last.prev = head;
         }
 
         public int get(int key) {
-
+            DoubleLinkedNode node = map.get(key);
+            if(node == null)
+                return -1;
+            else{
+                this.moveToHead(node);
+                return node.value;
+            }
         }
 
         public void put(int key, int value) {
+            DoubleLinkedNode node = map.get(key);
+            if(node == null){     //新添加的内容不在内存中，首先要判断内存是否已满
+                DoubleLinkedNode tmp = new DoubleLinkedNode();
+                tmp.key = key;
+                tmp.value = value;
+                addNewNode(tmp);
+                map.put(key,tmp);
+                if(map.size() > capacity){  //内存溢出，需要移除最后一个内存单元
+                    DoubleLinkedNode tail = popLast();
+                    map.remove(tail.key);
+                }
+            }
+            else{
+                node.value = value;
+                map.put(key, node);
+                moveToHead(node);
+            }
+        }
 
+        public void addNewNode(DoubleLinkedNode node){
+            node.prev = head;
+            node.next = head.next;
+            head.next.prev = node;
+            head.next = node;
+        }
+
+        public void removeNode(DoubleLinkedNode node){
+            DoubleLinkedNode pre = node.prev;
+            DoubleLinkedNode next = node.next;
+            pre.next = next;
+            next.prev = pre;
+        }
+
+        public void moveToHead(DoubleLinkedNode node){  //讲一个节点移到链表头部，先将其删除，在添加到首部。
+            removeNode(node);
+            addNewNode(node);
+        }
+
+        public DoubleLinkedNode popLast(){
+            DoubleLinkedNode res = last.prev;
+            removeNode(res);
+            return res;
         }
     }
-
+    static private class DoubleLinkedNode {
+        private int key;
+        private int value;
+        private DoubleLinkedNode prev;
+        private DoubleLinkedNode next;
+    }
 
 }
