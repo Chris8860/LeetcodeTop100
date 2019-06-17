@@ -18,8 +18,7 @@ package LeetcodeTop100.Top1__Top10;
 
 public class Top1_No1 {
     public static void main(String[] args) {
-
-
+        System.out.println("aaaa");
     }
 
 //    public static int[] twoSum(int[] nums, int target){
