@@ -32,7 +32,7 @@ public class Top6_No3 {
         for(int i = 0; i < s.length(); ++i){
             char c = s.charAt(i);
             if(map.containsKey(c)) {
-                j = Math.max(j, map.get(c));  //注意j有可能会比当前字符c之前存的位置大，比如fdsasdf,那么遍历到第二个f时，j为3，但是map.get(c)为0.
+                j = Math.max(j, map.get(c) + 1);  //注意j有可能会比当前字符c之前存的位置大，比如fdsasdf,那么遍历到第二个f时，j为3，但是map.get(c)为0.
             }
             map.put(c, i);
             maxLen = Math.max(maxLen, i - j + 1);
