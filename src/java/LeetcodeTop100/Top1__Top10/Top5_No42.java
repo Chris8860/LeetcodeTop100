@@ -18,7 +18,6 @@ import java.util.Arrays;
  *        2、方法1中是按照行来求，换一种思路，按照列来解算？求出每一个位置上能够放多少水。对于每一个位置，其上能够放的水为：
  *        min(left_max, right_max) - height[i];问题变成，如何求解每个位置左右最大的值？
  *
- *
  * */
 
 
@@ -27,18 +26,33 @@ public class Top5_No42 {
     public static void main(String[] args) {
 
         int[] arr = {0,1,0,2,1,0,1,3,2,1,2,1};
-        System.out.println(trap1(arr));
+        System.out.println(trap2(arr));
     }
 
 
     //
     static int trap2(int[] height){
+        if(height.length < 3) return 0;
+        int water = 0;
+        int[] maxLeft = new int[height.length];
+        int[] maxRight = new int[height.length];
+        maxLeft[0] = height[0];
+        maxRight[maxRight.length - 1] = height[height.length - 1];
+        //动态规划计算maxLeft
+        for(int i = 1; i < maxLeft.length; ++i){
+            maxLeft[i] = Math.max(height[i], maxLeft[i - 1]);
+        }
+        //动态规划计算maxRight
+        for(int j = maxRight.length - 2; j >= 0; --j){
+            maxRight[j] = Math.max(height[j], maxRight[j + 1]);
+        }
 
-        return 0;
+        //求每个位置能够装下的水，注意最少能够装的水为0
+        for(int i =1; i < height.length - 1; ++i){
+            water += Math.max(Math.min(maxLeft[i - 1], maxRight[i + 1]) - height[i],0);
+        }
+        return water;
     }
-
-
-
 
 
     //way 1:依次统计每一层能够装多少水，原理就是将每一层转为0 1数组，统计有多少个0在1中间。此方法只有最后一个测试用例没有通过。
