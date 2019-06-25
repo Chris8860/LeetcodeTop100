@@ -20,7 +20,7 @@ public class Top19_No7 {
 
     public static void main(String[] args) {
 
-        System.out.println(reverse(1534236469));
+        System.out.println(reverse(1534236));
     }
 
     private static int reverse(int num){
