@@ -23,7 +23,7 @@ import java.util.Comparator;
  *              直接比较xxxy与yxxx的大小即可。
  *           c) 最后，记得对前面多余的0进行简化，如果第一个字符串是0，则直接返回0，因为后面都是0。
  *        2、不要把问题想复杂了，对于两个数的拼接，无非就是o1+o2与o2+o1，那么显然可以自定义一个比较器，将数组中的数按照拼接
- *        逻辑进行重新排序。最终保证相邻两个数，拼接后更大的数放在前面即可，也就是一种降序排列，降序的话是o2-o1
+ *        逻辑进行重新排序。最终保证相邻两个数，拼接后更大的数放在前面即可，也就是一种降序排列，降序的话是o2-o1。
  *
  *
  **/
@@ -100,12 +100,13 @@ public class Top38_No179 {
         String[] data = new String[nums.length];
         for(int i = 0; i < nums.length; ++i)
             data[i] = nums[i] + "";
+        //此时o1与o2都还是字符，因此直接o2+o1就是拼接这两个数字，利用字符串的compareTo方法，即可按位比较字符串。
         Arrays.sort(data, (o1, o2) -> (o2+o1).compareTo(o1+o2));
 
         StringBuilder res = new StringBuilder();
         for(String s : data){
-            if(s.charAt(0) == '0')
-                s = "0";
+            if(s.charAt(0) == '0')    //第一位为0，代表之后每一位都是零，拼接成的数字最大也就是为"0"。
+                return "0";
             res.append(s);
         }
         return res.toString();
