@@ -49,15 +49,11 @@ public class Top33_No236 {
             return root;
         TreeNode left = lowestCommonAncestor(root.left, p, q);
         TreeNode right = lowestCommonAncestor(root.right, p, q);
-
         if(left != null && right != null)
             return root;
         return left == null ? right : left;
 
     }
-
-
-
 
     //后序遍历，实际转换为中右左，利用addFirst方法。
     private static LinkedList<Integer> postOrder(TreeNode root){
